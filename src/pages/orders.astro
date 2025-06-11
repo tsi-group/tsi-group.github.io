@@ -1,0 +1,279 @@
+---
+import Layout from "../layouts/Layout.astro";
+import transactions from "../data/transactions.json";
+import "../styles/global.css";
+import Sidebar from "../components/layout/Sidebar.astro";
+---
+
+<Layout title="Orders">
+  <div
+    class="flex min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700"
+  >
+    <div class="fixed inset-y-0 left-0 w-64 z-20">
+      <Sidebar />
+    </div>
+    <main class="flex-1 ml-0 md:ml-64 px-2 sm:px-6 py-4 overflow-y-auto">
+      <h1
+        class="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-gray-800 dark:text-gray-100 md:pl-0 pl-16"
+      >
+        Ordenes
+      </h1>
+      <div class="overflow-x-auto bg-white dark:bg-gray-900 rounded-lg shadow">
+        <div class="relative">
+          <table
+            class="hidden min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm md:table"
+          >
+            <thead class="bg-gray-100 dark:bg-gray-800 sticky top-0 z-10">
+              <tr>
+                <th
+                  class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap"
+                  >Orden ID</th
+                >
+                <th
+                  class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap"
+                  >Customer</th
+                >
+                <th
+                  class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap"
+                  >Fecha</th
+                >
+                <th
+                  class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap"
+                  >Cantidad</th
+                >
+                <th
+                  class="px-2 sm:px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase whitespace-nowrap"
+                  >Status</th
+                >
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"
+            >
+              <!-- {
+                transactions.map((txn) => (
+                  <tr class="hover:bg-gray-50 dark:hover:bg-gray-800 transition">
+                    <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                      {txn.id}
+                    </td>
+                    <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                      {txn.to}
+                    </td>
+                    <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">
+                      {txn.timestamp}
+                    </td>
+                    <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">
+                      ${txn.amount.toFixed(2)}
+                    </td>
+                    <td class="px-2 sm:px-6 py-4 whitespace-nowrap">
+                      <span
+                        class={
+                          txn.status === "pendiente"
+                            ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                            : txn.status === "orden colocada"
+                              ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                              : txn.status === "en proceso"
+                                ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                                : txn.status === "confirmada"
+                                  ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                  : txn.status === "fallida"
+                                    ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                                    : "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                        }
+                      >
+                        {txn.status.charAt(0).toUpperCase() +
+                          txn.status.slice(1)}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              } -->
+              <script>
+                if (typeof window !== "undefined") {
+                  const investments = localStorage.getItem("investments");
+                  // Example: If you want to map and log each investment (assuming it's an array in JSON)
+                  if (investments) {
+                    try {
+                      const parsed = JSON.parse(investments);
+                      if (Array.isArray(parsed)) {
+                        parsed.forEach((inv, idx) => {
+                          const row = document.createElement("tr");
+                          row.innerHTML = `
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">${inv.id || ""}</td>
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">${inv.to || ""}</td>
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">${
+                          inv.timestamp
+                            ? new Date(inv.timestamp).toLocaleDateString(
+                                "es-ES",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "2-digit",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
+                            : ""
+                        }</td>
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">${inv.amount ? Number(inv.amount).toFixed(2) : "0.00"}</td>
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap">
+                          <span class="${(() => {
+                            switch (inv.status) {
+                              case "pendiente":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+                              case "orden colocada":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+                              case "en proceso":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+                              case "confirmada":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+                              case "fallida":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+                              default:
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+                            }
+                          })()}">
+                            ${(inv.status || "").charAt(0).toUpperCase() + (inv.status || "").slice(1)}
+                          </span>
+                        </td>
+                      `;
+                          const tbody = document.querySelector("tbody");
+                          if (tbody) tbody.appendChild(row);
+                        });
+                      }
+                    } catch (e) {
+                      console.error("Failed to parse investments:", e);
+                    }
+                  }
+                }
+              </script>
+            </tbody>
+          </table>
+          {/* Mobile Card List */}
+          <div class="md:hidden space-y-4">
+            <!-- {
+              transactions.map((txn) => (
+                <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-4 flex flex-col gap-2">
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Orden ID</span>
+                    <span class="font-semibold text-gray-900 dark:text-gray-100">{txn.id}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Customer</span>
+                    <span class="text-gray-900 dark:text-gray-100">{txn.to}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Fecha</span>
+                    <span class="text-gray-500 dark:text-gray-400">{txn.timestamp}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Cantidad</span>
+                    <span class="text-gray-900 dark:text-gray-100">${txn.amount.toFixed(2)}</span>
+                  </div>
+                  <div class="flex justify-between items-center">
+                    <span class="text-xs text-gray-500 dark:text-gray-400">Status</span>
+                    <span
+                      class={
+                        txn.status === "pendiente"
+                          ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                          : txn.status === "orden colocada"
+                            ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                            : txn.status === "en proceso"
+                              ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200"
+                              : txn.status === "confirmada"
+                                ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                : txn.status === "fallida"
+                                  ? "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
+                                  : "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200"
+                      }
+                    >
+                      {txn.status.charAt(0).toUpperCase() + txn.status.slice(1)}
+                    </span>
+                  </div>
+                </div>
+              ))
+            } -->
+            <script>
+              if (typeof window !== "undefined") {
+                const investments = localStorage.getItem("investments");
+                // Example: If you want to map and log each investment (assuming it's an array in JSON)
+                if (investments) {
+                  try {
+                    const parsed = JSON.parse(investments);
+                    if (Array.isArray(parsed)) {
+                      parsed.forEach((inv, idx) => {
+                        // Create a card container for mobile
+                        const card = document.createElement("div");
+                        card.className =
+                          "bg-white dark:bg-gray-900 rounded-lg shadow p-4 flex flex-col gap-2 mb-4";
+                        card.innerHTML = `
+                          <div class="flex justify-between items-center">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">Orden ID</span>
+                          <span class="font-semibold text-gray-900 dark:text-gray-100">${inv.id || ""}</span>
+                          </div>
+                          <div class="flex justify-between items-center">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">Customer</span>
+                          <span class="text-gray-900 dark:text-gray-100">${inv.to || ""}</span>
+                          </div>
+                          <div class="flex justify-between items-center">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">Fecha</span>
+                            <span class="text-gray-500 dark:text-gray-400">${
+                              inv.timestamp
+                                ? new Date(inv.timestamp).toLocaleDateString(
+                                    "es-ES",
+                                    {
+                                      year: "numeric",
+                                      month: "short",
+                                      day: "2-digit",
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    }
+                                  )
+                                : ""
+                            }</span>
+                          </div>
+                          <div class="flex justify-between items-center">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">Cantidad</span>
+                          <span class="text-gray-900 dark:text-gray-100">${inv.amount ? Number(inv.amount).toFixed(2) : "0.00"}</span>
+                          </div>
+                          <div class="flex justify-between items-center">
+                          <span class="text-xs text-gray-500 dark:text-gray-400">Status</span>
+                          <span class="${(() => {
+                            switch (inv.status) {
+                              case "pendiente":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+                              case "orden colocada":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+                              case "en proceso":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
+                              case "confirmada":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+                              case "fallida":
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+                              default:
+                                return "px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+                            }
+                          })()}">
+                            ${(inv.status || "").charAt(0).toUpperCase() + (inv.status || "").slice(1)}
+                          </span>
+                          </div>
+                        `;
+                        // Append to the mobile card list container
+                        const mobileList = document.querySelector(
+                          ".md\\:hidden.space-y-4"
+                        );
+                        if (mobileList) mobileList.appendChild(card);
+                      });
+                    }
+                  } catch (e) {
+                    console.error("Failed to parse investments:", e);
+                  }
+                }
+              }
+            </script>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</Layout>

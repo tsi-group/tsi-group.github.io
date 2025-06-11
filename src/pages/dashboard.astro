@@ -1,0 +1,409 @@
+---
+import Layout from "../layouts/Layout.astro";
+import "../styles/global.css";
+import activities from "../data/activities.json";
+import transactions from "../data/transactions.json";
+import Sidebar from "../components/layout/Sidebar.astro";
+const title = "Panel de Control";
+
+// get the name of the user from localStorage (browser only)
+let stats = { users: 2000, revenue: "$0", growth: "2%" };
+
+// Calculate ETH 7-day growth dynamically (SSR)
+try {
+  const res = await fetch(
+    "https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=7"
+  );
+  const data = await res.json();
+  const prices = data.prices || [];
+  if (prices.length > 1) {
+    const first = prices[0][1];
+    const last = prices[prices.length - 1][1];
+    const growthPct = ((last - first) / first) * 100;
+    stats.growth = `${growthPct >= 0 ? "+" : ""}${growthPct.toFixed(2)}%`;
+  }
+} catch (e) {
+  // fallback if fetch fails
+  stats.growth = "2%";
+}
+
+if (typeof window !== "undefined") {
+  const item = localStorage.getItem("item");
+  console.log(item);
+}
+---
+
+<Layout title={title}>
+  <div
+    class="flex min-h-screen bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-700"
+  >
+    {/* Sidebar Container */}
+    <Sidebar />
+    {/* Main Content */}
+    <main
+      class="flex-1 px-2 py-12 flex flex-col gap-4 overflow-y-auto h-screen md:h-screen"
+      style="max-height: 100vh;"
+    >
+      <div class="md:ml-0 ml-14">
+        <h1
+          class="text-3xl font-bold text-gray-800 dark:text-gray-100 mb-4 mt-2 md:mt-0 transition-all duration-200"
+        >
+          Panel de Control
+        </h1>
+        <p
+          class="text-gray-600 dark:text-gray-300 mb-8 transition-all duration-200"
+        >
+          {/* Extrae el nombre del usuario desde localStorage (browser only) */}
+          <script is:inline>
+            document.addEventListener("DOMContentLoaded", function () {
+              let userName = "Usuario";
+              if (typeof window !== "undefined") {
+                const user = localStorage.getItem("registeredUser");
+                if (user) {
+                  try {
+                    const parsed = JSON.parse(user);
+                    if (parsed && parsed.name) {
+                      userName = parsed.name;
+                    }
+                  } catch (e) {
+                    userName = user;
+                  }
+                  // Replace underscores with spaces if present
+                  if (typeof userName === "string") {
+                    userName = userName.replace(/_/g, " ");
+                  }
+                }
+                document
+                  .getElementById("welcome-msg")
+                  ?.replaceChildren(
+                    document.createTextNode(
+                      `¡Bienvenido a tu panel de control, ${userName}!`
+                    )
+                  );
+              }
+            });
+          </script>
+          <span id="welcome-msg">¡Bienvenido a tu panel de control!</span>
+        </p>
+      </div>
+
+      <div class="flex flex-col md:flex-row gap-6">
+        {/* Stats Column */}
+        <div
+          class="flex-1 bg-white dark:bg-gray-900 rounded-lg shadow p-6 mb-6 md:mb-0"
+        >
+          <h2 class="text-xl font-semibold mb-2 dark:text-gray-100">
+            Estadísticas
+          </h2>
+          <div
+            class="flex flex-col md:flex-row md:space-x-4 space-y-4 md:space-y-0"
+          >
+            <div
+              class="flex-1 bg-blue-100 dark:bg-blue-900 rounded-lg p-4 flex items-center shadow"
+            >
+              <div class="flex-1">
+                <div
+                  class="text-sm text-blue-700 dark:text-blue-200 font-semibold"
+                >
+                  Usuarios
+                </div>
+                <div
+                  class="text-2xl font-bold text-blue-900 dark:text-blue-100"
+                >
+                  {stats.users}
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex-1 bg-green-100 dark:bg-green-900 rounded-lg p-4 flex items-center shadow"
+            >
+              <div class="flex-1">
+                <div
+                  class="text-sm text-green-700 dark:text-green-200 font-semibold"
+                >
+                  Posibles Ingresos
+                </div>
+                <div
+                  class="text-2xl font-bold text-green-900 dark:text-green-100"
+                >
+                  <span id="revenue-amount">$0</span>
+                  <script is:inline>
+                    if (typeof window !== "undefined") {
+                      const revenueElem = document.getElementById("revenue-amount");
+                      if (revenueElem) {
+                        revenueElem.textContent = "$0";
+                        try {
+                          const investmentsRaw = window.localStorage.getItem("investments");
+                          if (
+                            investmentsRaw &&
+                            investmentsRaw.trim() !== "" &&
+                            investmentsRaw !== "[]"
+                          ) {
+                            const investments = JSON.parse(investmentsRaw);
+                            if (Array.isArray(investments) && investments.length > 0) {
+                              const total = investments.reduce(
+                                (sum, inv) =>
+                                  sum +
+                                  (typeof inv.price_usd === "number"
+                                    ? inv.price_usd
+                                    : 0),
+                                0
+                              );
+                              revenueElem.textContent = `$${total.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                            }
+                          }
+                        } catch (e) {
+                          // fallback to default revenue, already set above
+                        }
+                      }
+                    }
+                  </script>
+                </div>
+              </div>
+            </div>
+            <div
+              class="flex-1 bg-yellow-100 dark:bg-yellow-900 rounded-lg p-4 flex items-center shadow"
+            >
+              <div class="flex-1">
+                <div
+                  class="text-sm text-yellow-700 dark:text-yellow-200 font-semibold"
+                >
+                  Crecimiento
+                </div>
+                <div
+                  class="text-2xl font-bold text-yellow-900 dark:text-yellow-100"
+                >
+                  {stats.growth}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {/* Recent Activity Column */}
+        <!-- <div
+          class="flex-1 bg-white dark:bg-gray-900 rounded-lg shadow p-6 mb-6 md:mb-0"
+        >
+          <h2 class="text-xl font-semibold mb-2 dark:text-gray-100">
+            Actividad Reciente
+          </h2>
+          <ul class="text-gray-500 dark:text-gray-300 space-y-1">
+            {
+              activities.map((activity) => (
+                <li class="flex items-center bg-gray-100 dark:bg-gray-800 rounded-lg px-4 py-2 shadow-sm mb-2">
+                  <span class="flex-1 text-gray-700 dark:text-gray-200">
+                    {activity.description}
+                  </span>
+                  <span class="ml-4 text-xs text-gray-400 bg-gray-200 dark:bg-gray-700 rounded px-2 py-0.5">
+                    {new Date(activity.date).toLocaleString("es-ES", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: false,
+                      timeZone: "UTC",
+                    })}
+                  </span>
+                </li>
+              ))
+            }
+          </ul>
+        </div> -->
+      </div>
+      {/* ETH Price Graph Section */}
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 dark:text-gray-100">
+          Precio de CluckinCoin
+        </h2>
+        <div class="w-full" style="height:180px;max-width:100%;">
+          <canvas
+            id="ethChart"
+            height="120"
+            style="height:180px;width:100%;max-width:100%;"
+            class="sm:h-[120px] h-[180px]"></canvas>
+        </div>
+        <script is:inline>
+          // Fetch ETH price history and render chart
+          document.addEventListener("DOMContentLoaded", async function () {
+            const ctx = document.getElementById("ethChart").getContext("2d");
+            // Fetch last 7 days ETH price from CoinGecko
+            const res = await fetch(
+              "https://api.coingecko.com/api/v3/coins/ethereum/market_chart?vs_currency=usd&days=7"
+            );
+            const data = await res.json();
+            const prices = data.prices || [];
+            const labels = prices.map((p) => {
+              const d = new Date(p[0]);
+              return `${d.getDate()}/${d.getMonth() + 1}`;
+            });
+            const values = prices.map((p) => p[1]);
+            // Load Chart.js from CDN if not present
+            if (!window.Chart) {
+              const script = document.createElement("script");
+              script.src = "https://cdn.jsdelivr.net/npm/chart.js";
+              script.onload = () => drawChart();
+              document.body.appendChild(script);
+            } else {
+              drawChart();
+            }
+            function drawChart() {
+              new window.Chart(ctx, {
+                type: "line",
+                data: {
+                  labels,
+                  datasets: [
+                    {
+                      label: "CluckinCoin/USD",
+                      data: values,
+                      borderColor: "#6366f1",
+                      backgroundColor: "rgba(99,102,241,0.1)",
+                      fill: true,
+                      tension: 0.3,
+                    },
+                  ],
+                },
+                options: {
+                  responsive: true,
+                  maintainAspectRatio: false,
+                  plugins: {
+                    legend: { display: true, labels: { color: "#374151" } },
+                  },
+                  scales: {
+                    x: { ticks: { color: "#6b7280" } },
+                    y: { ticks: { color: "#6b7280" } },
+                  },
+                },
+              });
+            }
+          });
+        </script>
+      </div>
+      {/* Transactions Section */}
+      <div class="bg-white dark:bg-gray-900 rounded-lg shadow p-6 mb-8">
+        <h2 class="text-xl font-semibold mb-4 dark:text-gray-100">
+          Transacciones Recientes
+        </h2>
+        <div class="overflow-x-auto">
+          <table
+            class="min-w-full divide-y divide-gray-200 dark:divide-gray-700"
+          >
+            <thead>
+              <tr>
+                <th
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                  >Tipo</th
+                >
+                <th
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                  >Usuario</th
+                >
+                <th
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                  >Cantidad</th
+                >
+                <th
+                  class="px-4 py-2 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider"
+                  >Fecha</th
+                >
+              </tr>
+            </thead>
+            <tbody
+              class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700"
+            >
+              <script>
+                if (typeof window !== "undefined") {
+                  const investments = localStorage.getItem("investments");
+                  // Example: If you want to map and log each investment (assuming it's an array in JSON)
+                  if (investments) {
+                    try {
+                      const parsed = JSON.parse(investments);
+                      if (Array.isArray(parsed)) {
+                        parsed.forEach((inv, idx) => {
+                          const row = document.createElement("tr");
+                          // Determine type class and label
+                          let typeClass =
+                            "px-2 py-1 rounded text-xs font-semibold ";
+                          let typeLabel = "";
+                          if (inv.type === "compra") {
+                            typeClass +=
+                              "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+                            typeLabel = "Compra";
+                          } else if (inv.type === "venta") {
+                            typeClass +=
+                              "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+                            typeLabel = "Venta";
+                          } else {
+                            typeClass +=
+                              "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+                            typeLabel =
+                              inv.type && typeof inv.type === "string"
+                                ? inv.type.charAt(0).toUpperCase() +
+                                  inv.type.slice(1)
+                                : "";
+                          }
+                          row.innerHTML = `
+                        <td class="px-4 py-2 whitespace-nowrap">
+                          <span class="${typeClass}">
+                            ${typeLabel}
+                          </span>
+                        </td>
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">${(inv.user || "").replace(/_/g, " ")}</td>
+
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-900 dark:text-gray-100">${inv.amount ? Number(inv.amount).toFixed(2) : "0.00"}</td>
+                        <td class="px-2 sm:px-6 py-4 whitespace-nowrap text-gray-500 dark:text-gray-400">${
+                          inv.timestamp
+                            ? new Date(inv.timestamp).toLocaleDateString(
+                                "es-ES",
+                                {
+                                  year: "numeric",
+                                  month: "short",
+                                  day: "2-digit",
+                                  hour: "2-digit",
+                                  minute: "2-digit",
+                                }
+                              )
+                            : ""
+                        }</td>
+                      `;
+                          const tbody = document.querySelector("tbody");
+                          if (tbody) tbody.appendChild(row);
+                        });
+                      }
+                    } catch (e) {
+                      console.error("Failed to parse investments:", e);
+                    }
+                  }
+                }
+              </script>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+  </div>
+  <style is:inline>
+    html,
+    body,
+    #app,
+    #__astro_root {
+      height: 100%;
+      min-height: 100%;
+    }
+    body {
+      overflow: hidden;
+    }
+    main[role="main"],
+    main {
+      overflow-y: auto;
+      height: 100vh;
+      max-height: 100vh;
+    }
+    @media (max-width: 767px) {
+      main[role="main"],
+      main {
+        height: auto;
+        max-height: none;
+      }
+    }
+  </style>
+</Layout>

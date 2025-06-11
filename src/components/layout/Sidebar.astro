@@ -1,0 +1,135 @@
+---
+---
+
+<div class="flex-shrink-0">
+  {/* Mobile Sidebar Toggle Button */}
+  <button
+    id="sidebar-toggle"
+    type="button"
+    class="md:hidden fixed top-4 left-4 z-40 p-2 rounded bg-white dark:bg-gray-900 shadow focus:outline-none"
+    aria-label="Abrir menú"
+    onclick="document.getElementById('sidebar').classList.toggle('hidden')"
+  >
+    <svg
+      class="w-6 h-6 text-gray-700 dark:text-gray-200"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="2"
+      viewBox="0 0 24 24"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        d="M4 6h16M4 12h16M4 18h16"></path>
+    </svg>
+  </button>
+
+  {/* Sidebar */}
+  <aside
+    id="sidebar"
+    class="fixed md:static top-0 left-0 h-full w-64 bg-white dark:bg-gray-900 shadow-md px-6 py-8 md:py-0 z-30 transition-transform duration-200 md:block hidden flex flex-col justify-between"
+    style="overflow-y: auto;"
+  >
+    <nav class="flex flex-col h-full">
+      <ul class="space-y-4 flex-1 mt-16">
+        <li>
+          <a
+            href="/TSI-Group/dashboard"
+            class="block text-lg font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400"
+            >Dashboard</a
+          >
+        </li>
+        <li>
+          <a
+            href="/TSI-Group/invest"
+            class="block text-lg font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400"
+            >Invertir</a
+          >
+        </li>
+        <li>
+          <a
+            href="/TSI-Group/orders"
+            class="block text-lg font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400"
+            >Órdenes</a
+          >
+        </li>
+      </ul>
+      <div class="w-full">
+        <form action="/TSI-Group/login" method="get" class="mb-4">
+          <button
+            type="submit"
+            class="w-full text-left block text-lg font-semibold text-gray-700 dark:text-gray-200 hover:text-red-600 dark:hover:text-red-400 hover:cursor-pointer relative z-10"
+            style="pointer-events: auto;"
+          >
+            Cerrar sesión
+          </button>
+        </form>
+      </div>
+    </nav>
+  </aside>
+  <script is:inline>
+    // Hide sidebar when clicking outside (on mobile)
+    document.addEventListener("click", function (e) {
+      const sidebar = document.getElementById("sidebar");
+      const toggle = document.getElementById("sidebar-toggle");
+      if (!sidebar || !toggle) return;
+      if (
+        !sidebar.classList.contains("hidden") &&
+        !sidebar.contains(e.target) &&
+        !toggle.contains(e.target) &&
+        window.innerWidth < 768
+      ) {
+        sidebar.classList.add("hidden");
+      }
+    });
+    // Ensure sidebar is visible on resize for md+
+    window.addEventListener("resize", function () {
+      const sidebar = document.getElementById("sidebar");
+      if (!sidebar) return;
+      if (window.innerWidth >= 768) {
+        sidebar.classList.remove("hidden");
+      } else {
+        sidebar.classList.add("hidden");
+      }
+    });
+    // Hide sidebar by default on mobile
+    if (window.innerWidth < 768) {
+      document.getElementById("sidebar")?.classList.add("hidden");
+    }
+  </script>
+  <style is:inline>
+    /* Prevent main hover effects from affecting sidebar logout button */
+    #sidebar button[type="submit"] {
+      position: relative;
+      z-index: 10;
+      pointer-events: auto;
+    }
+    /* Make sidebar static and scrollable, main scrolls independently */
+    @media (min-width: 768px) {
+      #sidebar {
+        position: static !important;
+        height: 100vh;
+        min-height: 100vh;
+        max-height: 100vh;
+        overflow-y: auto;
+        z-index: 20;
+      }
+    }
+    /* On mobile, sidebar overlays above content and below toggle */
+    @media (max-width: 767px) {
+      #sidebar {
+        z-index: 30;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        min-height: 100vh;
+        max-height: 100vh;
+        position: fixed !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      }
+      #sidebar-toggle {
+        z-index: 40;
+      }
+    }
+  </style>
+</div>

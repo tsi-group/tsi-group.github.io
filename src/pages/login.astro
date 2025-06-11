@@ -1,0 +1,102 @@
+---
+import "../styles/global.css";
+import Layout from "../layouts/Layout.astro"
+const title = "Login";
+---
+
+<Layout {title}>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700">
+    <main class="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-md">
+      <h1 class="text-2xl font-bold text-center text-white">Login</h1>
+      <form id="login-form" class="space-y-5">
+        <div>
+          <label for="name" class="block text-sm font-medium text-white">Name</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            class="w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="yourname"
+          />
+        </div>
+        <div>
+          <label for="password" class="block text-sm font-medium text-white">Password</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            class="w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="********"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full py-2 px-4 bg-blue-600 text-white font-semibold rounded-md hover:bg-blue-700 transition"
+        >
+          Sign In
+        </button>
+      </form>
+      <p class="text-center text-sm text-gray-600">
+        Don't have an account?
+        <a href="/TSI-Group/register" class="text-blue-600 hover:underline">Register</a>
+      </p>
+      <div id="login-message" class="text-center text-red-500 mt-2"></div>
+    </main>
+  </div>
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+      // Simulate fetching registered user from server
+      // const registeredUser = {
+      //   name: "testuser",
+      //   password: "password123"
+      // };
+      const registeredUser = JSON.parse(localStorage.getItem('registeredUser')) || null;
+
+      const form = document.getElementById('login-form');
+      const messageDiv = document.getElementById('login-message');
+
+      form?.addEventListener('submit', function handleLogin(event) {
+        event.preventDefault();
+        messageDiv.textContent = "";
+
+        // Validation: check if registeredUser is not empty
+        if (!registeredUser || !registeredUser.name || !registeredUser.password) {
+          messageDiv.textContent = "No registered user found.";
+          return;
+        }
+
+        const name = form.name.value.trim();
+        const password = form.password.value;
+
+        // Required field validation
+        if (!name) {
+          messageDiv.textContent = "Name is required.";
+          return;
+        }
+        if (!password) {
+          messageDiv.textContent = "Password is required.";
+          return;
+        }
+
+        // Compare with registered user
+        if (name !== registeredUser.name || password !== registeredUser.password) {
+          messageDiv.textContent = "Invalid name or password.";
+          return;
+        }
+
+        // Success
+        messageDiv.textContent = "Login successful!";
+        messageDiv.classList.remove("text-red-500");
+        messageDiv.classList.add("text-green-500");
+        // Add your login logic here (e.g., redirect)
+        localStorage.setItem('isLoggedIn', 'true');
+        setTimeout(() => {
+          window.location.href = "/TSI-Group/dashboard";
+        }, 1000);
+      });
+    });
+  </script>
+</Layout>

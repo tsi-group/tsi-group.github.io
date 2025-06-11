@@ -1,0 +1,39 @@
+---
+import { Icon } from "astro-icon/components";
+---
+
+<footer class="bg-black/80 text-gray-300 py-8 px-4 w-full">
+  <div
+    class="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-start gap-y-8 p-8"
+  >
+    <div class="max-w-xl">
+      <p class="text-sm text-gray-200">
+        San Andreas Roleplay no está afiliado ni relacionado con Rockstar, ni
+        con SA-MP u open.mp, todo el contenido publicado es propiedad de los
+        jugadores y no del servidor.
+      </p>
+      <p class="text-sm mt-4">
+        Copyright © {new Date().getFullYear()} <a href="https://sarp.es" class="text-primary"
+          >SARP.es</a
+        >. Todos los derechos reservados.
+      </p>
+    </div>
+
+    <div class="flex gap-6">
+      <a
+        href="https://github.com/San-Andreas-Roleplay-ES"
+        class="hover:opacity-50 transition-opacity"
+        aria-label="GitHub Repository"
+      >
+        <Icon class="w-9 h-9" name="mdi:github" />
+      </a>
+      <a
+        href="https://discord.gg/sa-rp"
+        class="hover:opacity-50 transition-opacity"
+        aria-label="Join our Discord Server"
+      >
+        <Icon class="w-9 h-9" name="mdi:discord" />
+      </a>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,57 @@
+[
+  {
+    "activity_id": "act001",
+    "description": "Compró 0.05 CluckinCoin a $35,000 cada uno",
+    "action": "comprar",
+    "asset": "CluckinCoin",
+    "amount": 0.05,
+    "price_usd": 35000,
+    "date": "2024-06-10T09:15:00Z",
+    "source": "billetera_externa",
+    "destination": "billetera_usuario"
+  },
+  {
+    "activity_id": "act002",
+    "description": "Vendió 1.2 CluckinCoin a $2,500 cada uno",
+    "action": "vender",
+    "asset": "CluckinCoin",
+    "amount": 1.2,
+    "price_usd": 2500,
+    "date": "2024-06-11T14:30:00Z",
+    "source": "billetera_usuario",
+    "destination": "billetera_externa"
+  },
+  {
+    "activity_id": "act003",
+    "description": "Transferido 500 CluckinCoin a billetera_intercambio a $1 cada uno",
+    "action": "transferir",
+    "asset": "CluckinCoin",
+    "amount": 500,
+    "price_usd": 1,
+    "date": "2024-06-12T12:00:00Z",
+    "source": "billetera_usuario",
+    "destination": "billetera_intercambio"
+  },
+  {
+    "activity_id": "act004",
+    "description": "Compró 10 CluckinCoin a $150 cada uno",
+    "action": "comprar",
+    "asset": "CluckinCoin",
+    "amount": 10,
+    "price_usd": 150,
+    "date": "2024-06-13T08:45:00Z",
+    "source": "billetera_externa",
+    "destination": "billetera_usuario"
+  },
+  {
+    "activity_id": "act005",
+    "description": "Transferido 0.01 CluckinCoin a billetera_hardware a $36,000 cada uno",
+    "action": "transferir",
+    "asset": "CluckinCoin",
+    "amount": 0.01,
+    "price_usd": 36000,
+    "date": "2024-06-14T16:20:00Z",
+    "source": "billetera_usuario",
+    "destination": "billetera_hardware"
+  }
+]

@@ -1,0 +1,63 @@
+---
+import '../styles/global.css';
+import Layout from '../layouts/Layout.astro';
+const title = "Registrarse";
+---
+
+<Layout {title}>
+  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-gray-800 to-gray-700">
+    <div class="bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-md">
+      <h1 class="text-2xl font-bold mb-6 text-center text-white">Crear una cuenta</h1>
+      <form class="space-y-5" id="register-form">
+        <div>
+          <label class="block text-gray-300 mb-1" for="name">Nombre</label>
+          <input
+            id="name"
+            name="name"
+            type="text"
+            required
+            class="w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <div>
+          <label class="block text-gray-300 mb-1" for="password">Contraseña</label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            class="w-full px-4 py-2 border border-gray-700 rounded-lg bg-gray-900 text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
+        <button
+          type="submit"
+          class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition"
+        >
+          Registrarse
+        </button>
+      </form>
+      <p class="mt-4 text-center text-gray-400">
+        ¿Ya tienes una cuenta?
+        <a href="/TSI-Group/login" class="text-blue-400 hover:underline">Iniciar sesión</a>
+      </p>
+    </div>
+  </div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('register-form');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          const formElement = form as HTMLFormElement;
+          const name = (formElement.elements.namedItem('name') as HTMLInputElement)?.value || '';
+          const password = (formElement.elements.namedItem('password') as HTMLInputElement)?.value || '';
+          const user = { name, password };
+          localStorage.setItem('registeredUser', JSON.stringify(user));
+          alert('¡Registro guardado en el almacenamiento local!');
+          console.log('Usuario registrado desde localStorage:', localStorage.getItem('registeredUser'));
+          (form as HTMLFormElement).reset();
+        });
+      }
+    });
+  </script>
+</Layout>

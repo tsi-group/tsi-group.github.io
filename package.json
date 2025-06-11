@@ -1,0 +1,28 @@
+{
+  "name": "tsi-global-investments",
+  "description": "A modern, responsive website for TSI Global Investments, showcasing their services and expertise in the investment sector.",
+  "author": "Miguel22247",
+  "license": "MIT",
+  "keywords": [
+    "investment",
+    "finance",
+    "responsive",
+    "modern",
+    "website"
+  ],
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@iconify-json/mdi": "^1.2.3",
+    "@tailwindcss/vite": "^4.1.8",
+    "astro": "^5.8.1",
+    "astro-icon": "^1.1.5",
+    "tailwindcss": "^4.1.8"
+  }
+}

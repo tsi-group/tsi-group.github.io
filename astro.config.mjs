@@ -10,7 +10,6 @@ export default defineConfig({
     plugins: [tailwindcss()],
   },
   site: 'https://tsi-group.github.io',
-  base: 'TSI-Group',
 
   integrations: [icon()]
 });

@@ -40,7 +40,7 @@ const title = "Login";
       </form>
       <p class="text-center text-sm text-gray-600">
         Don't have an account?
-        <a href="/TSI-Group/register" class="text-blue-600 hover:underline">Register</a>
+        <a href="/register" class="text-blue-600 hover:underline">Register</a>
       </p>
       <div id="login-message" class="text-center text-red-500 mt-2"></div>
     </main>
@@ -94,7 +94,7 @@ const title = "Login";
         // Add your login logic here (e.g., redirect)
         localStorage.setItem('isLoggedIn', 'true');
         setTimeout(() => {
-          window.location.href = "/TSI-Group/dashboard";
+          window.location.href = "/dashboard";
         }, 1000);
       });
     });

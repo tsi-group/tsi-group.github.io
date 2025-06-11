@@ -9,7 +9,7 @@ export default defineConfig({
   vite: {
     plugins: [tailwindcss()],
   },
-  site: 'https://miguel22247.github.io',
+  site: 'https://tsi-group.github.io',
   base: 'TSI-Group',
 
   integrations: [icon()]
